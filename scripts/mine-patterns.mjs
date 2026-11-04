@@ -1,0 +1,14 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import {fileURLToPath} from 'node:url';
+import '../dist/engine.js';
+import '../dist/discovery.js';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),raw=fs.readFileSync(path.join(root,'dist/data/snapshot.json')),D=JSON.parse(raw),F=globalThis.BPDiscovery;
+const started=Date.now();
+const full=F.build(D),recent=F.build(D,{window:'recent'});
+const out={schema:1,sourceHash:crypto.createHash('sha256').update(raw).digest('hex'),policy:F.POLICY,full,recent};
+fs.writeFileSync(path.join(root,'dist/data/discovery.json'),JSON.stringify(out));
+fs.writeFileSync(path.join(root,'dist/data/discovery-data.js'),'globalThis.BP_DISCOVERY='+JSON.stringify(out)+';');
+const name=ids=>ids.map(id=>D.heroes.find(h=>h.id===id).name).join('+');
+console.log(JSON.stringify({ms:Date.now()-started,meta:full.meta,topAllies:full.allies.filter(r=>r.classification==='cross').slice(0,12).map(r=>({names:name(r.ids),n:r.n,w:r.w,teams:r.teams,size:r.size,series:r.series})),topResponses:full.responses.filter(r=>r.classification!=='observed').slice(0,12).map(r=>({names:name(r.ids),k:r.k,n:r.n,control:[r.controlK,r.controlN],delta:r.matchedDelta,coverage:r.matchedCoverage})),topBans:full.bans.filter(r=>r.classification!=='observed').slice(0,6).map(r=>({names:name(r.ids),k:r.k,n:r.n,delta:r.matchedDelta}))},null,2));

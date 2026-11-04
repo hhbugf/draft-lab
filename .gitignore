@@ -1,0 +1,10 @@
+node_modules/
+.cache/
+*.log
+.sites-runtime/
+.sites-checkout/
+
+/build/
+/dist/assets/heroes/
+.env
+.env.*

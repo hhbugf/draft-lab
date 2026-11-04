@@ -1,0 +1,92 @@
+{
+  "verifiedAt": "2026-10-20",
+  "timezone": "Asia/Shanghai",
+  "scope": "官方公开公告与2026年度总决赛规则；正式服与职业比赛服分开标识",
+  "sources": [
+    {"id":"s45","title":"9月23日正式服S45赛季「月照长安」版本更新公告","url":"https://pvp.qq.com/web201706/newsdetail.shtml?tid=808620","api":"https://apps.game.qq.com/wmp/v3.1/public/searchNews.php?p0=18&source=web_pc&id=808620","publishedAt":"2026-09-15 14:27:32","effectiveAt":"2026-09-23 00:00-05:00","type":"official_patch"},
+    {"id":"0929","title":"9月29日版本更新公告","url":"https://pvp.qq.com/web201706/newsdetail.shtml?tid=809860","type":"official_patch"},
+    {"id":"1008","title":"10月8日版本更新公告","url":"https://pvp.qq.com/web201706/newsdetail.shtml?tid=810034","effectiveAt":"2026-10-08 06:00-08:00","type":"official_patch"},
+    {"id":"1015","title":"10月15日版本更新公告","url":"https://pvp.qq.com/web201706/newsdetail.shtml?tid=810970","api":"https://apps.game.qq.com/wmp/v3.1/public/searchNews.php?p0=18&source=web_pc&id=810970","publishedAt":"2026-10-14 16:07:24","effectiveAt":"2026-10-15 05:00-08:00","type":"official_patch"},
+    {"id":"1015fix","title":"10月15日问题修复版本更新公告","url":"https://pvp.qq.com/web201706/newsdetail.shtml?tid=811043","effectiveAt":"2026-10-15 15:00-16:00","type":"official_patch"},
+    {"id":"1016","title":"10月16日服务器优化升级公告","url":"https://pvp.qq.com/web201706/newsdetail.shtml?tid=811127","effectiveAt":"2026-10-16 17:30-19:30","type":"official_patch"},
+    {"id":"rules","title":"2026年王者荣耀KPL年度总决赛 赛事规则（2026年9月版本）","url":"https://pvp.qq.com/web201706/newsdetail.shtml?tid=808728","api":"https://apps.game.qq.com/wmp/v3.1/public/searchNews.php?p0=18&source=web_pc&id=808728","publishedAt":"2026-09-17 22:20:36","type":"official_rules"},
+    {"id":"event","title":"2026年KPL年度总决赛官网","url":"https://pvp.qq.com/cp/kpl2026/index.html","type":"official_event","finding":"官网赛事规则按钮指向 tid=808728；正赛周期10月2日至11月14日"}
+  ],
+  "currentPublicVersion": {
+    "season":"S45 月照长安",
+    "seasonStarted":"2026-09-23",
+    "latestVerifiedBalancePatch":"2026-10-15",
+    "latestVerifiedMaintenance":"2026-10-16",
+    "label":"正式服 S45 · 10月15日英雄平衡",
+    "excluded":"10月20日、10月16日、10月13日体验服公告不适用于正式服推荐",
+    "professionalServerSync":"unknown",
+    "professionalServerSyncReason":"规则5.1仅规定比赛版本由赛组委决定，未公布具体比赛服补丁号；不能将10月15日正式服平衡直接宣称为年度总决赛比赛服版本。",
+    "professionalRecommendationPolicy":"职业统计保留赛事名和比赛日期，标明比赛服具体补丁未公开；正式服调整作为独立提示，不改写真实职业统计。"
+  },
+  "patchChanges": [
+    {"hero":"鲁班大师","date":"2026-10-15","source":"1015","status":"official_fact","summary":"三技能选中近距离墙体的冷却返还由70%降至50%；同时修复位移冷却返还比例异常。","inference":"近距离墙体连续位移与启动频率需要重新评估，不直接换算成胜率或推荐加减分。"},
+    {"hero":"赵云","date":"2026-10-15","source":"1015","status":"official_fact","summary":"二技能回复65(+13/Lv)(+2.5%额外生命)改为70(+14/Lv)(+1.5%额外生命)；三技能冷却18(-1.5/Lv)改为20(-2/Lv)。","inference":"回复对额外生命收益下降；大招前两级冷却延长，满级不变。"},
+    {"hero":"姬小满","date":"2026-10-15","source":"1015","status":"official_fact","summary":"被动摸鱼可减少三技能冷却；二技能回旋踢期间目标死亡可获得全额回复与力劲奖励。","inference":"续航、技能周转和连招容错有调整，职业强度需比赛样本验证。"},
+    {"hero":"夏侯惇","date":"2026-10-15","source":"1015","status":"official_fact","summary":"修复大招在特定情况下打断敌方霸体的异常问题。"},
+    {"hero":"王维","date":"2026-10-15","source":"1015","status":"official_fact","summary":"修复二技能经一技能后命中目标偶现支流叠加伤害异常。"},
+    {"hero":"蒙犽","date":"2026-10-08","source":"1008","status":"official_fact","summary":"修复死亡后一技能计时条背景与消耗炽怒时状态图标描述异常；公告未列英雄平衡数值调整。"},
+    {"hero":"海月","date":"2026-09-29","source":"0929","status":"official_fact","summary":"一技能基础与法强加成下调；二技能基础与法强加成上调。"},
+    {"hero":"马超","date":"2026-09-29","source":"0929","status":"official_fact","summary":"被动技能移速最大叠层由3降至2；一技能基础伤害由320~640升至330~660。"},
+    {"hero":"王维","date":"2026-09-23","source":"s45","status":"official_fact","summary":"新英雄上线；官方职业法师、推荐中路。"},
+    {"hero":"牛魔","date":"2026-09-23","source":"s45","status":"official_fact","summary":"一技能改为飞斧与拾取机制；二三技能引入按敌方最大生命计算的撞击伤害，被动双防调整。"},
+    {"hero":"夏侯惇","date":"2026-09-23","source":"s45","status":"official_fact","summary":"大招距离由800改为900，二段新增击飞及回收/位移选择；技能伤害结构引入撞击伤害。"},
+    {"hero":"蒙犽","date":"2026-09-23","source":"s45","status":"official_fact","summary":"炽怒与回复机制重做，一技能恒定贯穿，二技能固定7枚分裂弹，大招引导积累炽怒。"},
+    {"hero":"李白","date":"2026-09-23","source":"s45","status":"official_fact","summary":"二技能概率闪避改为一次有伤害上限的必定闪避。"},
+    {"hero":"空空儿","date":"2026-09-23","source":"s45","status":"official_fact","summary":"大招牵引速度提高，释放时刷新现存分身血量。"},
+    {"hero":"吕布","date":"2026-09-23","source":"s45","status":"official_fact","summary":"附魔回复提高，护盾与大招伤害数值调整。"}
+  ],
+  "environmentChanges":[
+    {"date":"2026-09-23","source":"s45","summary":"赛季限定召唤师技能雾行千山：穿越墙体，途中闪避伤害并留下减速雾气，冷却100秒；比赛服是否启用未核实。"},
+    {"date":"2026-09-23","source":"s45","summary":"视野精灵改为野区巡逻，无法暴露隐身英雄，最多存活90秒；仅普攻可攻击，近战伤害翻倍。"},
+    {"date":"2026-09-23","source":"s45","summary":"暴烈之甲、不死鸟之眼、冰霜冲击/徐行·凛冬、怒龙剑盾、破魔刀、制裁之刃调整，需与英雄评价分开记录。"},
+    {"date":"2026-10-15","source":"1015fix","summary":"修复晶石乐园物品转化未到账，无BP平衡变化。"},
+    {"date":"2026-10-16","source":"1016","summary":"服务器优化升级，无公告列出的英雄平衡变化。"}
+  ],
+  "rules": {
+    "id":"kpl-2026-finals-sep",
+    "source":"rules",
+    "banCountPerSide":5,
+    "pickCountPerSide":5,
+    "draftPhases":[
+      {"action":"ban","sides":["blue","red","blue","red"],"section":"6.1.1 A"},
+      {"action":"pick","sides":["blue","red","red","blue","blue","red"],"section":"6.1.1 B","groupedTurns":[1,2,2,1]},
+      {"action":"ban","sides":["red","blue","red","blue","red","blue"],"section":"6.1.1 C"},
+      {"action":"pick","sides":["red","blue","blue","red"],"section":"6.1.1 D","groupedTurns":[1,2,1]}
+    ],
+    "globalBP":{
+      "section":"6.2",
+      "eachTeamCanUseHeroOnce":true,
+      "trackedBy":"team",
+      "opponentUsedHeroesCannotBeBanned":true,
+      "summary":"一方已用英雄后续不能由己方再次使用，也不能再由对方禁用；使用次数对应队伍而非选手。"
+    },
+    "yuanLiu":{
+      "section":"6.1.3",
+      "banIdentity":"each_class_independent",
+      "pickIdentity":"all_classes_one_hero",
+      "summary":"元流之子禁用时各职业独立，选取时所有职业视为同一英雄。"
+    },
+    "peakDuel":{
+      "section":"6.3",
+      "bans":false,
+      "blindDraft":true,
+      "previousHeroesUnlocked":true,
+      "allowMirrorAcrossTeams":true,
+      "maxSameHeroWithinTeam":1,
+      "multipleClassHeroLimitWithinTeam":1,
+      "teamFormSeconds":180
+    },
+    "stages":[
+      {"name":"擂台赛","format":"BO5","mode":"全局BP","firstSideChoice":"裁判抛硬币","nextSideChoice":"上一局败方"},
+      {"name":"突围赛","format":"BO7","mode":"全局BP，第7局巅峰对决","firstSideChoice":"擂台赛排名顺位高方","nextSideChoice":"上一局败方"},
+      {"name":"淘汰赛","format":"BO7","mode":"全局BP，第7局巅峰对决","firstSideChoice":"裁判抛硬币","nextSideChoice":"上一局败方"},
+      {"name":"决赛","format":"BO7","mode":"全局BP，第7局巅峰对决","firstSideChoice":"胜者组冠军","nextSideChoice":"上一局败方"}
+    ],
+    "limitations":["5.1：比赛使用版本由赛组委决定，英雄、皮肤及装备可能被额外限制。","10.3：裁判可基于BUG等原因临时限制游戏元素；Demo需支持额外禁用。"]
+  }
+}
