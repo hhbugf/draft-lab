@@ -1,0 +1,112 @@
+{
+  "full_corpus_semantically_read": false,
+  "complete_uploaded_entries": [
+    {
+      "id": "K01",
+      "title": "反对本本主义",
+      "start_line": 1900,
+      "end_line": 2093,
+      "text_date": "1930-05",
+      "read_ranges": [
+        [
+          1900,
+          2093
+        ]
+      ],
+      "source_id": "xuanji",
+      "status": "supplied_full_entry_read_and_analyzed",
+      "source_sha256": "6f8268fa3121fba84f220fe1e9881cc7328948cb2c2dc0e5e9a06f7052ca8674",
+      "entry_sha256_utf8_joined_lines": "9cbc74f130683820dc12947db9cc9029b7e6408173d1704804f50cc194005391",
+      "read_date": "2026-11-08",
+      "collation_status": "not_collated_against_manuscript_or_printed_edition"
+    },
+    {
+      "id": "K02",
+      "title": "实践论",
+      "start_line": 3581,
+      "end_line": 3673,
+      "text_date": "1937-07",
+      "read_ranges": [
+        [
+          3581,
+          3624
+        ],
+        [
+          3625,
+          3673
+        ]
+      ],
+      "source_id": "xuanji",
+      "status": "supplied_full_entry_read_and_analyzed",
+      "source_sha256": "6f8268fa3121fba84f220fe1e9881cc7328948cb2c2dc0e5e9a06f7052ca8674",
+      "entry_sha256_utf8_joined_lines": "03060e678facab8392e99aaba18fcd1edf9b008a128a7dc9f98752a4e8021b48",
+      "read_date": "2026-11-08",
+      "collation_status": "not_collated_against_manuscript_or_printed_edition"
+    },
+    {
+      "id": "K03",
+      "title": "矛盾论",
+      "start_line": 3674,
+      "end_line": 4039,
+      "text_date": "1937-08",
+      "read_ranges": [
+        [
+          3674,
+          3756
+        ],
+        [
+          3757,
+          3813
+        ],
+        [
+          3814,
+          3860
+        ],
+        [
+          3861,
+          3921
+        ],
+        [
+          3922,
+          4039
+        ]
+      ],
+      "source_id": "xuanji",
+      "status": "supplied_full_entry_read_and_analyzed",
+      "source_sha256": "6f8268fa3121fba84f220fe1e9881cc7328948cb2c2dc0e5e9a06f7052ca8674",
+      "entry_sha256_utf8_joined_lines": "1f24a59dba3494dba79e13f32e9e3a87f5f01905f8e2883ac203bb54b19373ba",
+      "read_date": "2026-11-08",
+      "collation_status": "not_collated_against_manuscript_or_printed_edition"
+    },
+    {
+      "title": "论持久战",
+      "start_line": 5190,
+      "end_line": 5721,
+      "source_sha256": "6f8268fa3121fba84f220fe1e9881cc7328948cb2c2dc0e5e9a06f7052ca8674",
+      "excerpt_sha256_utf8": "5b57b7898de8daedae65c3014f3fe3d501107095db1be5fe256a1fd1a7515bf5",
+      "characters": 51722,
+      "status": "uploaded_version_complete_read_including_notes",
+      "paper_edition_collated": false
+    },
+    {
+      "title": "关于领导方法的若干问题",
+      "start_line": 9104,
+      "end_line": 9140,
+      "source_sha256": "6f8268fa3121fba84f220fe1e9881cc7328948cb2c2dc0e5e9a06f7052ca8674",
+      "excerpt_sha256_utf8": "a2cf9139222442fa69fb68efa6b6d6dae68be8754e19757e6b4069f6469ef071",
+      "characters": 3509,
+      "status": "uploaded_version_complete_read_including_notes",
+      "paper_edition_collated": false
+    },
+    {
+      "title": "党委会的工作方法",
+      "start_line": 13328,
+      "end_line": 13374,
+      "source_sha256": "6f8268fa3121fba84f220fe1e9881cc7328948cb2c2dc0e5e9a06f7052ca8674",
+      "excerpt_sha256_utf8": "ba61a943a8d90eefcb224280f5755c2ac74155a6a97032d911d896ce1cb24303",
+      "characters": 3016,
+      "status": "uploaded_version_complete_read_including_notes",
+      "paper_edition_collated": false
+    }
+  ]
+}

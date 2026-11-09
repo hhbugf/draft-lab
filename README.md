@@ -1,40 +1,7 @@
-# DRAFT LAB · 王者荣耀全局 BP 实验室
+# 赛博毛泽东 · Cyber Mao
 
-**回放真实 KPL 禁选，接管任意一手，推演后续选择与整场英雄资源。**
+Codex 项目技能。根据毛泽东原著与历史实践分析问题，区分原文、历史事实、解释和现代推演。内含六张核心著作思想卡、十二个思想模块、历史对照及决策模板。
 
-基于职业比赛公开记录的独立 BP 研究工具。支持全局英雄池、候选推荐与推演、职业比赛回放、阵容关系研究，以及实验性胜率模型。个人存档保存在浏览器中，可导入和导出 JSON。非腾讯或 KPL 官方项目。
+在 Codex 中打开仓库目录，输入 `$cyber-mao 分析我的问题……`。技能入口位于 `.agents/skills/cyber-mao`。
 
-## 直接体验（无需安装）
-
-前往 [v0.5.3 测试版下载页](https://github.com/hhbugf/draft-lab/releases/tag/v0.5.3)，在 **Assets** 中下载 `DRAFT-LAB-v0.5.3-offline.zip`，解压后用电脑 Chrome 或 Edge 打开 `DRAFT-LAB.html`。这是下载后本地运行的版本。
-
-- 真实赛事回放：沿职业比赛 BP 顺序复盘，也可从中途接管，尝试另一种选法。
-- 全局 BP 推演：结合位置适配、已选英雄与系列赛英雄池，展示候选理由。
-- 体系关系研究：查看比赛中实际出现的组合与应对信号，追溯样本。
-- 本地存档：自行录入的比赛数据不上传、不与其他测试者共用；更换浏览器前请导出备份。
-
-开源下载版保留原有深色界面和功能，英雄原画替换为自制占位图。数据为历史快照，胜率仍为实验结果。发现不合理推荐时，欢迎在 [Issues](https://github.com/hhbugf/draft-lab/issues) 附上 BP 顺序、预期结果及截图；请先移除私人信息。
-
-## 本地运行
-
-需要 Node.js 22 或更新版本。下载或克隆仓库后，在项目目录执行：
-
-```sh
-npm ci
-npm run build
-npm test
-npm start
-```
-
-打开 [http://127.0.0.1:4173](http://127.0.0.1:4173)。也可以在桌面浏览器直接打开构建生成的 `build/DRAFT-LAB-Demo.html`，离线使用。静态托管发布目录为 `dist/`。
-
-## 数据与模型
-
-- 固定快照采集于 2026-10-20，覆盖 2026 KPL 年度总决赛 10 月 2–18 日的 144 局；139 局可完整重建系列赛状态。版本与队伍状态不会自动更新。
-- 数据来源：[官方赛事数据中心](https://pvp.qq.com/matchdata/)、[官方英雄列表](https://pvp.qq.com/web201605/js/herolist.json)和[赛事规则](https://pvp.qq.com/web201706/newsdetail.shtml?tid=808728)。快照保留逐局出处和复现所需记录。
-- 推荐为启发式排序。概率为独立实验估计，留出集 Brier 分数 0.2109，高于队伍基线的 0.2057（越低越好）。比赛服补丁同步状态未核实；共现不代表因果或必然克制。
-- `dist/` 包含前端、数据和兼容构建，`scripts/` 包含模型训练、研究复算与离线打包，`tools/` 包含数据获取与编译说明，`tests/` 包含回归测试。
-
-## 授权范围
-
-本项目原创代码和文档采用 [MIT](LICENSE)；赛事记录、角色名称、商标、来源链接等第三方内容不纳入该授权。仓库不含官方英雄原画、原始采集缓存或个人比赛存档，开源界面使用自制占位图。字体依其 [SIL OFL 1.1](dist/fonts/OFL.txt) 单独授权。详见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+使用全文检索时，将已有 `Cyber_Mao_Corpus.sqlite3` 放到 `.agents/skills/cyber-mao/assets/corpus.sqlite3`。GitHub 仓库包含技能和检索代码，原文全文由使用者本地接入。公开出处与使用方式见[原文和检索](.agents/skills/cyber-mao/references/sources.md)。
