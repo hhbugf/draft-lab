@@ -14,4 +14,11 @@ python3 scripts/corpus.py verify
 
 基准数据库包含 `xuanji`（《选集》）和 `wenji`（《文集》）。定位行号从各 TXT 第一行起算。默认检索范围为正文候选，排除附注、编者评论和静火私人补编。可用 `--include-supplementary` 检查补编，逐字查询可用 `--include-editorial` 纳入附注、评论和目录。布局标签及自动题名定位需要结合上下文核对。
 
-如持有基准版 TXT，将它们命名为 `mao-xuanji.txt` 和 `mao-wenji.txt`，使用 `python3 scripts/build_corpus.py build --sources 原文目录 --out 输出目录` 生成数据库。构建程序检查基准版哈希。将生成的 `Cyber_Mao_Corpus.sqlite3` 接入上述位置。原著公开出处见[篇段表](modules-and-passages.md)，版本资料见[历史对照](history.md)。
+如持有两份基准版 TXT，从技能目录运行以下命令，替换为实际文件路径。安装程序核对两份文件的 SHA-256 并验证数据库可无损重建原文，然后将其放到默认位置。已有数据库时，安装程序会保留该文件。
+
+```sh
+python3 scripts/build_corpus.py install --wenji "/path/毛泽东文集.txt" --xuanji "/path/毛泽东选集.txt"
+python3 scripts/corpus.py verify
+```
+
+原著公开出处见[篇段表](modules-and-passages.md)，版本资料见[历史对照](history.md)。

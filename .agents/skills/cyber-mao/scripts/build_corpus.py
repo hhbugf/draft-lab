@@ -7,9 +7,11 @@ from bisect import bisect_right
 from collections import Counter
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
 import sqlite3
+from tempfile import TemporaryDirectory
 
 SOURCE_SPECS = [{'id': 'wenji', 'path': 'mao-wenji.txt', 'library_file_id': None, 'file_id': None, 'name': '毛泽东文集（基准 TXT）', 'sha256': 'd34783714147b13f12e6e4efb87afad8760244d3c71a8abe4ad9e69cd9904d82'}, {'id': 'xuanji', 'path': 'mao-xuanji.txt', 'library_file_id': None, 'file_id': None, 'name': '毛泽东选集（基准 TXT）', 'sha256': '6f8268fa3121fba84f220fe1e9881cc7328948cb2c2dc0e5e9a06f7052ca8674'}]
 CN = dict(zip('〇○零O一二三四五六七八九', '0000123456789'))
@@ -153,7 +155,15 @@ def make_chunks(spec, text, lines, offsets, volumes, articles):
     return segments
 
 
-def build(source_dir, out_dir):
+def build(source_paths, out_dir):
+    originals = {}
+    for spec in SOURCE_SPECS:
+        source_path = source_paths[spec['id']]
+        raw = source_path.read_bytes()
+        if hashlib.sha256(raw).hexdigest() != spec['sha256']:
+            raise ValueError(f"{spec['id']}: {source_path} does not match the baseline TXT SHA-256")
+        originals[spec['id']] = raw
+
     out_dir.mkdir(parents=True, exist_ok=True)
     db_path = out_dir / 'Cyber_Mao_Corpus.sqlite3'
     if db_path.exists():
@@ -171,9 +181,8 @@ def build(source_dir, out_dir):
     ''')
     summary = {'version': '2.0', 'indexed_date': '2026-11-08', 'reading_status': 'mechanically_indexed_not_fully_read', 'source_files': [], 'warnings': [], 'article_anchors': [], 'unmatched_date_anchors': []}
     for spec in SOURCE_SPECS:
-        raw = (source_dir / spec['path']).read_bytes()
-        sha = hashlib.sha256(raw).hexdigest()
-        assert sha == spec['sha256'], (spec['id'], sha)
+        raw = originals[spec['id']]
+        sha = spec['sha256']
         text, lines, offsets, volumes, articles, unknowns = parse_source(spec, raw)
         chunks = make_chunks(spec, text, lines, offsets, volumes, articles)
         db.execute('INSERT INTO sources VALUES(?,?,?,?,?,?,?,?,?)', (spec['id'], spec['name'], spec['library_file_id'], spec['file_id'], sha, len(raw), len(text), len(lines), text))
@@ -203,6 +212,24 @@ def build(source_dir, out_dir):
     print(json.dumps(summary['counts'], ensure_ascii=False))
     for source in summary['source_files']:
         print(source['id'], [(v['number'],v['article_anchors']) for v in source['volume_blocks']])
+
+
+def install(source_paths):
+    assets = Path(__file__).resolve().parents[1] / 'assets'
+    destination = assets / 'corpus.sqlite3'
+    if destination.exists():
+        raise FileExistsError(f'Refusing to overwrite {destination}')
+    assets.mkdir(parents=True, exist_ok=True)
+    with TemporaryDirectory(prefix='corpus-', dir=assets) as temp:
+        out_dir = Path(temp)
+        build(source_paths, out_dir)
+        # Publish the verified database atomically without replacing another install.
+        built = out_dir / 'Cyber_Mao_Corpus.sqlite3'
+        if os.name == 'nt':
+            built.rename(destination)
+        else:
+            os.link(built, destination)
+    print(f'Installed {destination}')
 
 
 def search(db_path, terms, limit, include_supplementary, any_term=False, editorial=False):
@@ -244,12 +271,25 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     subs = p.add_subparsers(dest='command', required=True)
     b = subs.add_parser('build'); b.add_argument('--sources', type=Path, required=True); b.add_argument('--out', type=Path, required=True)
+    i = subs.add_parser('install', help='Build and install the baseline database in assets/')
+    i.add_argument('--wenji', type=Path, required=True)
+    i.add_argument('--xuanji', type=Path, required=True)
     s = subs.add_parser('search'); s.add_argument('db', type=Path); s.add_argument('terms', nargs='+'); s.add_argument('--limit', type=int, default=5); s.add_argument('--include-supplementary', action='store_true'); s.add_argument('--any', action='store_true'); s.add_argument('--editorial', action='store_true')
     r = subs.add_parser('read'); r.add_argument('db', type=Path); r.add_argument('source', choices=['wenji','xuanji']); r.add_argument('start', type=int); r.add_argument('end', type=int)
     args = p.parse_args()
-    if args.command == 'build': build(args.sources, args.out)
-    elif args.command == 'search': search(args.db, args.terms, args.limit, args.include_supplementary, args.any, args.editorial)
-    else: read(args.db, args.source, args.start, args.end)
+    if args.command in ('build', 'install'):
+        try:
+            if args.command == 'build':
+                source_paths = {spec['id']: args.sources / spec['path'] for spec in SOURCE_SPECS}
+                build(source_paths, args.out)
+            else:
+                install({'wenji': args.wenji, 'xuanji': args.xuanji})
+        except (OSError, ValueError) as error:
+            p.exit(1, f'{error}\n')
+    elif args.command == 'search':
+        search(args.db, args.terms, args.limit, args.include_supplementary, args.any, args.editorial)
+    else:
+        read(args.db, args.source, args.start, args.end)
 
 
 if __name__ == '__main__':
