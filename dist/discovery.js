@@ -34,7 +34,7 @@ function responseRows(data,games,mode='response'){
  const E=G.BPEngine,H=E.index(data),profileData={...data,games},profileState={...E.initial(data),window:'all'},observed=new Set(games.flatMap(g=>g.players.map(p=>p.hero))),heroes=data.heroes.filter(h=>mode==='ban'?true:observed.has(h.id));
  const used=new Map(),running=new Map();for(const g of [...data.games].sort((a,b)=>a.matchId.localeCompare(b.matchId)||a.seq-b.seq))for(const camp of [1,2]){const tid=(camp===1?g.blue:g.red).id,k=g.matchId+':'+tid,old=running.get(k)||new Set();used.set(g.id+':'+camp,new Set(old));running.set(k,new Set([...old,...g.players.filter(p=>p.camp===camp).map(p=>H[p.hero].family)]));}
  const groups=new Map(),observations=new Map();let opportunities=0;
- for(const g of games){if(!g.sequenceValid||(g.bo===7&&g.seq===7))continue;const rounds=pickRounds(g);
+ for(const g of games){if(!g.sequenceValid||(g.bo===7&&g.seq===7)||g.roleIssues?.length)continue;const rounds=pickRounds(g);
   for(const camp of [1,2])for(const target of g.players.filter(p=>p.camp===3-camp)){
    const at=g.actions.findIndex(a=>a.type==='pick'&&a.camp===3-camp&&a.hero===target.hero);if(at<0)continue;
    const decisionType=mode==='ban'?'ban':'pick',decision=g.actions.findIndex((a,i)=>i>at&&a.camp===camp&&a.type===decisionType);if(decision<0)continue;

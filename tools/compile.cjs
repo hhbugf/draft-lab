@@ -1,4 +1,6 @@
 const fs=require('fs'),path=require('path');
+const existing=path.resolve(__dirname,'../dist/data/snapshot.json');
+if(fs.existsSync(existing)&&JSON.parse(fs.readFileSync(existing,'utf8')).meta.checkedThrough>'2026-10-20')throw Error('Legacy full compiler uses 2026-10-20 hero/patch assumptions. Use tools/update-matches.cjs --as-of YYYY-MM-DD for reviewed match refreshes; do not overwrite a newer snapshot with legacy labels.');
 const root=path.resolve(__dirname,'../.cache'),out=path.resolve(__dirname,'../dist/data');
 fs.mkdirSync(out,{recursive:true});
 const raw=JSON.parse(fs.readFileSync(root+'/heroes.json','utf8'));

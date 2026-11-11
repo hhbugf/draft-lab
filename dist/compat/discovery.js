@@ -122,7 +122,7 @@ var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
     return { allies: all.sort((a, b) => b.score - a.score || b.n - a.n || a.id.localeCompare(b.id)), heroCounts, roleCounts };
   }
   function responseRows(data, games, mode = "response") {
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e;
     const E = G.BPEngine, H = E.index(data), profileData = __spreadProps(__spreadValues({}, data), { games }), profileState = __spreadProps(__spreadValues({}, E.initial(data)), { window: "all" }), observed = new Set(games.flatMap((g) => g.players.map((p) => p.hero))), heroes = data.heroes.filter((h) => mode === "ban" ? true : observed.has(h.id));
     const used = /* @__PURE__ */ new Map(), running = /* @__PURE__ */ new Map();
     for (const g of [...data.games].sort((a, b) => a.matchId.localeCompare(b.matchId) || a.seq - b.seq)) for (const camp of [1, 2]) {
@@ -133,7 +133,7 @@ var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
     const groups = /* @__PURE__ */ new Map(), observations = /* @__PURE__ */ new Map();
     let opportunities = 0;
     for (const g of games) {
-      if (!g.sequenceValid || g.bo === 7 && g.seq === 7) continue;
+      if (!g.sequenceValid || g.bo === 7 && g.seq === 7 || ((_a = g.roleIssues) == null ? void 0 : _a.length)) continue;
       const rounds = pickRounds(g);
       for (const camp of [1, 2]) for (const target of g.players.filter((p) => p.camp === 3 - camp)) {
         const at = g.actions.findIndex((a) => a.type === "pick" && a.camp === 3 - camp && a.hero === target.hero);
@@ -150,7 +150,7 @@ var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
           const group = groups.get(groupKey), success = after.some((a) => a.camp === camp && a.type === decisionType && a.hero === h.id) ? 1 : 0;
           group.n++;
           group.k += success;
-          (_b = (_a = group.strata)[stratum]) != null ? _b : _a[stratum] = { n: 0, k: 0 };
+          (_c = (_b = group.strata)[stratum]) != null ? _c : _b[stratum] = { n: 0, k: 0 };
           group.strata[stratum].n++;
           group.strata[stratum].k += success;
           opportunities++;
@@ -159,7 +159,7 @@ var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
           const r = observations.get(k);
           r.n++;
           r.k += success;
-          (_d = (_c = r.strata)[stratum]) != null ? _d : _c[stratum] = { n: 0, k: 0 };
+          (_e = (_d = r.strata)[stratum]) != null ? _e : _d[stratum] = { n: 0, k: 0 };
           r.strata[stratum].n++;
           r.strata[stratum].k += success;
           if (success) {

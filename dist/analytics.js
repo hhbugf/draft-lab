@@ -83,7 +83,7 @@ function responseEvidence(candidate,target,s,data){
  const ds=dataset(s,data);ds.responses??=new Map();const cacheKey=candidate+':'+target;if(ds.responses.has(cacheKey))return ds.responses.get(cacheKey);
  const H=G.BPEngine.index(data),family=id=>H[id]?.family,mode=id=>{const count={};for(const g of ds.games)for(const p of g.players)if(p.hero===id)count[p.role]=(count[p.role]||0)+1;return Object.entries(count).sort((a,b)=>b[1]-a[1])[0]?.[0];};
  const targetRole=mode(target),candidateRole=mode(candidate),groups={target:{n:0,picks:0},other:{n:0,picks:0}};
- for(const g of ds.games){if(!g.sequenceValid||g.seq===7)continue;for(const camp of [1,2]){
+ for(const g of ds.games){if(!g.sequenceValid||g.seq===7||g.roleIssues?.length)continue;for(const camp of [1,2]){
   const opp=g.players.find(p=>p.camp===3-camp&&p.role===targetRole);if(!opp)continue;
   const at=g.actions.findIndex(a=>a.type==='pick'&&a.camp===3-camp&&a.hero===opp.hero);if(at<0)continue;
   const prior=g.actions.slice(0,at+1),tid=(camp===1?g.blue:g.red).id;

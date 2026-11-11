@@ -7,16 +7,16 @@ import '../dist/analytics.js';
 import '../dist/insights.js';
 const D=JSON.parse(fs.readFileSync(new URL('../dist/data/snapshot.json',import.meta.url))),E=globalThis.BPEngine,A=globalThis.BPAnalytics,M=globalThis.BP_MODEL,id=n=>D.heroes.find(h=>h.name===n).id;
 const fixture=JSON.parse(fs.readFileSync(new URL('./fixtures/weak-professional-lineup.json',import.meta.url)));
-test('correct screenshot identity and official aggregate are 橘右京 18 picks 6 wins',()=>{
+test('correct screenshot identity remains 橘右京 and updated aggregate is 31 picks 12 wins',()=>{
  assert.equal(D.heroes.find(h=>h.id===fixture.actions.find(a=>a.type==='pick'&&a.camp===1).hero).name,'橘右京');
- const h=D.heroes.find(h=>h.name==='橘右京');assert.deepEqual([h.stats.pick_num,h.stats.victory_battle_count,h.stats.ban_num],[18,6,12]);
+ const h=D.heroes.find(h=>h.name==='橘右京');assert.deepEqual([h.stats.pick_num,h.stats.victory_battle_count,h.stats.ban_num],[31,12,22]);
  assert.ok(!fixture.actions.some(a=>a.type==='pick'&&a.hero===id('铠')));
 });
-test('unseen and one-game heroes carry explicit evidence status, never fabricated 0%/100% strength',()=>{
+test('unseen and low-sample heroes carry explicit evidence status, never fabricated 0%/100% strength',()=>{
  const p=A.predict(fixture,D);assert.equal(p.unavailable,undefined);
  assert.deepEqual(p.coverage.map(c=>[c.unseen,c.sparse]),[[3,1],[0,0]]);
  for(const name of ['瑶','妲己','亚瑟'])assert.equal(p.coverage[0].heroes.find(h=>h.name===name).picks,0);
- assert.equal(p.coverage[0].heroes.find(h=>h.name==='鲁班七号').picks,1);
+ assert.equal(p.coverage[0].heroes.find(h=>h.name==='鲁班七号').picks,2);
  assert.ok(p.coverage[0].heroes.find(h=>h.name==='鲁班七号').priority<.5);
  assert.ok(p.priorBlue<p.blue);assert.ok(p.priorGroups.strength<0);assert.ok(p.priorGroups.structure<0);assert.equal(p.unsupported,true);
  assert.ok(p.priorBlue<.5,'stress test only; not a claim of measured true win rate');
@@ -38,9 +38,9 @@ test('all demand profiles use only completed earlier series; no self-game demand
 });
 test('holdout demand is frozen to training and comparison includes the unchanged old model',()=>{
  const m=M.validation.model,tr=D.games.filter(g=>M.validation.trainIds.includes(g.id));
- assert.equal(m.strengthProfile.n,100);
+ assert.equal(m.strengthProfile.n,M.validation.trainGames);
  for(const h of D.heroes)assert.equal(m.strengthProfile.heroes[h.id].picks,tr.flatMap(g=>g.players).filter(p=>p.hero===h.id).length);
- assert.ok(Math.abs(M.validation.stages['20'].draft.brier-.2108651726898559)<1e-10);
+ assert.ok(Math.abs(M.validation.stages['20'].draft.brier-.24700040831420755)<1e-10);
  assert.ok(M.validation.stages['20'].strengthExperiment.brier>M.validation.stages['20'].draft.brier,'must disclose failed global accuracy improvement');
 });
 test('Python strength experiment and browser features reproduce identical holdout probabilities',()=>{

@@ -45,7 +45,8 @@ def strength_profile(gs):
    for h in heroes:
     if hero_index[h]['family'] not in spent:counts[h]['opportunities']+=1
   for p in g['players']:
-   r=counts[p['hero']];r['picks']+=1;r['wins']+=int(p['camp']==g['winCamp']);r['roles'][p['role']]=r['roles'].get(p['role'],0)+1
+   r=counts[p['hero']];r['picks']+=1;r['wins']+=int(p['camp']==g['winCamp']);
+   if not any(x['camp']==p['camp'] for x in g.get('roleIssues',[])):r['roles'][p['role']]=r['roles'].get(p['role'],0)+1
   for a in g['actions']:
    if a['type']=='ban':counts[a['hero']]['bans']+=1
  rates={h:(r['picks']+.5*r['bans'])/(r['opportunities']+12) for h,r in counts.items()}
@@ -124,11 +125,11 @@ for k in ordered:
  prior={g['id'] for g in games if max(z['date'] for z in series[g['matchId']])<start}
  rolling[k]=model(prior)
  print('as-of',k,len(prior),flush=True)
-artifact={'version':'0.4.0','dataHash':hashlib.sha256(raw).hexdigest(),'features':features,'relations':relations,'penalties':penalty.tolist(),'coefficientPriors':coefficient_prior.tolist(),
+artifact={'version':'0.5.4','dataHash':hashlib.sha256(raw).hexdigest(),'features':features,'relations':relations,'penalties':penalty.tolist(),'coefficientPriors':coefficient_prior.tolist(),
  'strengthPolicy':{'version':1,'presentation':'零训练出场英雄使单点统计胜率暂停展示；先验实验单独标注，不替代统计模型。低样本阈值6只用于证据提示。','opportunity':'每局开局双方可用池机会，排除该队全局已用英雄族；未排除本局后续Ban或占位，不能解释为决策时条件选择率。','demand':'(Pick + 0.5 Ban)/(局初可用机会 + 12)，再以同主分路至少3次出场英雄需求中位数归一为 r/(r+median)。Ban归入需求，不当作胜负。','scale':'历史样本局数/(局数+24)；每个训练前缀仅使用该系列赛开始前已结束系列赛的需求，留出期冻结训练期画像。','priors':'职业需求系数先验1.0；群体先手覆盖0.35；前排覆盖0.25。L2回归更新；需求正则16、结构24。属于显式教练假设，未见英雄预测不可视为已验证胜率。','structure':'先手覆盖 engage≥4且control≥3；前排覆盖tank≥4；每侧最多一份覆盖。来源是规则画像，非官方量化能力。','sensitivity':'将职业需求和结构项系数同时乘0.5或1.5得到先验权重敏感性区间，不是置信区间。'},
  'strengthExperimentPromoted':False,
  'method':'主统计模型保留队伍差、选边、已选/已Ban及四项关系的L2逻辑回归；另训练显式职业需求/先手/前排系数先验实验，未通过准确性验收，不替代主统计模型。每局21个前缀合计权重1。',
- 'exclusions':'1局BP原始顺序异常排除建模；不使用人头、经济、伤害、时长或赛后字段；未单独估计选手实力；无实时对局遥测。',
+ 'exclusions':str(len(D['games'])-len(games))+'局无有效常规BP顺序的记录（含巅峰双盲）排除建模；不使用人头、经济、伤害、时长或赛后字段；未单独估计选手实力；无实时对局遥测。',
  'full':model({g['id'] for g in games}),'rolling':rolling,'validation':validation}
 (ROOT/'dist/data/model.json').write_text(json.dumps(artifact,ensure_ascii=False,separators=(',',':')),encoding='utf8')
 (ROOT/'dist/data/model.js').write_text('globalThis.BP_MODEL='+json.dumps(artifact,ensure_ascii=False,separators=(',',':'))+';',encoding='utf8')

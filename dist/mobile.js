@@ -1,6 +1,6 @@
 (function(G){
 'use strict';
-const VERSION='0.5.3';
+const VERSION='0.5.4';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function chrome(){return `<div class="mobile-topbar"><div class="mobile-wordmark"><span>D</span><div><strong>DRAFT LAB</strong><small>王者 · 全局BP实验室</small></div></div><button data-action="mobile-tools" aria-label="打开更多工具">更多 <span aria-hidden="true">⋯</span></button></div>`;}
 function nav(page,icon){return `<nav class="mobile-bottom-nav" aria-label="手机主导航">${[['draft','draft','BP工作台'],['research','chart','体系研究'],['stats','chart','职业数据'],['more','layers','更多']].map(([id,glyph,name])=>`<button ${id==='more'?'data-action="mobile-tools"':`data-nav="${id}"`} ${page===id||(id==='more'&&!['draft','research','stats'].includes(page))?'aria-current="page"':''}><span aria-hidden="true">${icon(glyph)}</span><span>${name}</span></button>`).join('')}</nav>`;}

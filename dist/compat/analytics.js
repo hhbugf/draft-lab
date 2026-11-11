@@ -208,7 +208,7 @@ var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
     return { value: Math.max(-1, Math.min(1, value)), links };
   }
   function responseEvidence(candidate, target, s, data) {
-    var _a, _b;
+    var _a, _b, _c;
     const ds = dataset(s, data);
     (_a = ds.responses) != null ? _a : ds.responses = /* @__PURE__ */ new Map();
     const cacheKey = candidate + ":" + target;
@@ -224,7 +224,7 @@ var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
     };
     const targetRole = mode(target), candidateRole = mode(candidate), groups = { target: { n: 0, picks: 0 }, other: { n: 0, picks: 0 } };
     for (const g of ds.games) {
-      if (!g.sequenceValid || g.seq === 7) continue;
+      if (!g.sequenceValid || g.seq === 7 || ((_b = g.roleIssues) == null ? void 0 : _b.length)) continue;
       for (const camp of [1, 2]) {
         const opp = g.players.find((p) => p.camp === 3 - camp && p.role === targetRole);
         if (!opp) continue;
@@ -233,7 +233,7 @@ var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
         const prior = g.actions.slice(0, at + 1), tid = (camp === 1 ? g.blue : g.red).id;
         const consumed = data.games.some((old) => old.matchId === g.matchId && old.seq < g.seq && old.players.some((p) => p.teamId === tid && family(p.hero) === family(candidate)));
         if (consumed || prior.some((a) => a.type === "ban" && a.hero === candidate) || prior.some((a) => a.type === "pick" && family(a.hero) === family(candidate))) continue;
-        const roleHero = (_b = g.players.find((p) => p.camp === camp && p.role === candidateRole)) == null ? void 0 : _b.hero;
+        const roleHero = (_c = g.players.find((p) => p.camp === camp && p.role === candidateRole)) == null ? void 0 : _c.hero;
         if (prior.some((a) => a.type === "pick" && a.camp === camp && a.hero === roleHero)) continue;
         const group = groups[opp.hero === target ? "target" : "other"];
         group.n++;

@@ -72,16 +72,16 @@ var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
     return best;
   }
   function roleEvidence(s, h, data) {
-    var _a, _b, _c, _d, _e, _f;
+    var _a, _b, _c, _d, _e, _f, _g;
     let cache = roleCache.get(data);
     if (!cache) {
       cache = { all: {}, recent: {}, profiles: {} };
       for (const g of data.games) for (const p of g.players) {
-        if (!ROLES.includes(p.role)) continue;
-        (_c = (_a = cache.all)[_b = p.hero]) != null ? _c : _a[_b] = {};
+        if (!ROLES.includes(p.role) || ((_a = g.roleIssues) == null ? void 0 : _a.some((x) => x.camp === p.camp))) continue;
+        (_d = (_b = cache.all)[_c = p.hero]) != null ? _d : _b[_c] = {};
         cache.all[p.hero][p.role] = (cache.all[p.hero][p.role] || 0) + 1;
         if (g.date >= ROLE_POLICY.recentStart) {
-          (_f = (_d = cache.recent)[_e = p.hero]) != null ? _f : _d[_e] = {};
+          (_g = (_e = cache.recent)[_f = p.hero]) != null ? _g : _e[_f] = {};
           cache.recent[p.hero][p.role] = (cache.recent[p.hero][p.role] || 0) + 1;
         }
       }
@@ -221,25 +221,23 @@ var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
   function sampleStats(s, h, data) {
     if (s.window === "all") return h.stats;
     const gs = sampleGames(s, data);
-    let n = 0, w = 0, bans = 0;
+    let n = 0, w = 0, bans = 0, pickGames = 0;
     for (const g of gs) {
-      const p = g.players.find((p2) => p2.hero === h.id);
-      if (p) {
-        n++;
-        if (g.winCamp === p.camp) w++;
-      }
-      if (g.actions.some((a) => a.hero === h.id && a.type === "ban")) bans++;
+      const ps = g.players.filter((p) => p.hero === h.id);
+      n += ps.length;
+      w += ps.filter((p) => g.winCamp === p.camp).length;
+      if (ps.length) pickGames++;
+      bans += g.actions.filter((a) => a.hero === h.id && a.type === "ban").length;
     }
-    return n || bans ? { battle_count: n, victory_battle_count: w, win_rate: n ? w / n : 0, pick_num: n, ban_num: bans, pick_rate: n / gs.length, ban_rate: bans / gs.length } : null;
+    return n || bans ? { battle_count: n, victory_battle_count: w, defeated_battle_count: n - w, win_rate: n ? w / n : 0, pick_num: n, ban_num: bans, pick_game_count: pickGames, pick_rate: gs.length ? pickGames / gs.length : 0, ban_rate: gs.length ? bans / gs.length : 0 } : null;
   }
   function pairEvidence(a, b, s, data, type = "ally") {
     const gs = sampleGames(s, data);
     let n = 0, w = 0;
-    for (const g of gs) {
-      const pa = g.players.find((p) => p.hero === a), pb = g.players.find((p) => p.hero === b);
-      if (!pa || !pb || (type === "ally" ? pa.camp !== pb.camp : pa.camp === pb.camp)) continue;
+    for (const g of gs) for (const camp of [1, 2]) {
+      if (!g.players.some((p) => p.camp === camp && p.hero === a) || !g.players.some((p) => p.camp === (type === "ally" ? camp : 3 - camp) && p.hero === b)) continue;
       n++;
-      if (g.winCamp === pa.camp) w++;
+      if (g.winCamp === camp) w++;
     }
     return { n, w, rate: n ? w / n : null };
   }

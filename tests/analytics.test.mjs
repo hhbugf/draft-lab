@@ -11,12 +11,12 @@ const sigmoid=z=>1/(1+Math.exp(-z));
 function state(g,actions=g.actions){return {...E.initial(D),teamA:g.blue,teamB:g.red,blueKey:'A',actions};}
 test('model matches actual snapshot hash and excludes abnormal sequence',()=>{
  assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),M.dataHash);
- assert.equal(M.full.n,143);assert.equal(M.features.length,M.full.weights.length);
+ assert.equal(M.full.n,D.games.filter(g=>g.sequenceValid).length);assert.equal(M.features.length,M.full.weights.length);
  assert.ok(M.features.every(k=>/^(side|team:|pick:|ban:|relation:|strength:|structure:)/.test(k)),'no in-game result features');
 });
 test('chronological holdout is disjoint by whole series and time',()=>{
  const tr=D.games.filter(g=>M.validation.trainIds.includes(g.id)),te=D.games.filter(g=>M.validation.testIds.includes(g.id));
- assert.equal(tr.length,100);assert.equal(te.length,43);
+ assert.equal(tr.length,143);assert.equal(te.length,87);
  assert.ok(tr.every(g=>!te.some(t=>t.matchId===g.matchId)));
  assert.ok(Math.max(...tr.map(g=>Date.parse(g.date)))<Math.min(...te.map(g=>Date.parse(g.date))));
 });
@@ -43,27 +43,27 @@ test('prediction updates from picks and bans; both camps sum to one; full game i
 });
 test('replay evidence excludes own and future matches, recent is recomputed',()=>{
  const s=E.initial(D),full=A.evidence([id('钟馗'),id('小乔')],'ally',s,D),recent=A.evidence([id('钟馗'),id('小乔')],'ally',{...s,window:'recent'},D);
- assert.equal(full.n,27);assert.equal(full.w,12);assert.equal(full.teams,11);assert.equal(full.phase1,26);
+ assert.equal(full.n,44);assert.equal(full.w,19);assert.equal(full.teams,12);assert.equal(full.phase1,41);
  assert.ok(recent.n<full.n);const first=D.games.find(g=>g.matchId==='2026100201');
  assert.equal(A.evidence([id('钟馗'),id('小乔')],'ally',{...s,analysisMatchId:first.matchId},D).n,0);
 });
-test('named hypotheses keep zero triple and sparse counters honest',()=>{
+test('named hypotheses reflect new real triple while sparse counters stay honest',()=>{
  const s=E.initial(D),tri=A.evidence([id('狄仁杰'),id('元流之子(辅助)'),id('嬴政')],'ally',s,D);
- assert.equal(tri.n,0);assert.equal(tri.rate,null);assert.equal(tri.interval,null);
- const pair=A.evidence([id('狄仁杰'),id('元流之子(辅助)')],'ally',s,D);assert.equal(pair.n,4);assert.equal(pair.w,3);
+ assert.equal(tri.n,1);assert.equal(tri.rate,0);assert.ok(tri.interval);assert.equal(tri.examples[0].id,'1054884368_3_1792492829');
+ const pair=A.evidence([id('狄仁杰'),id('元流之子(辅助)')],'ally',s,D);assert.equal(pair.n,8);assert.equal(pair.w,4);
  const a=A.evidence([id('钟无艳'),id('镜')],'enemy',s,D),b=A.evidence([id('项羽'),id('关羽')],'enemy',s,D);
- assert.deepEqual([a.n,a.w,a.after],[3,1,3]);assert.deepEqual([b.n,b.w,b.after],[13,7,12]);
+ assert.deepEqual([a.n,a.w,a.after],[3,1,3]);assert.deepEqual([b.n,b.w,b.after],[22,10,20]);
 });
 test('manual mechanism labels never create an empirical bonus with zero samples',()=>{
  const s=E.initial(D),nobody={...D.heroes.find(h=>h.name==='嬴政')};
  const z=A.relationScore(s,id('狄仁杰'),[nobody],[],D);assert.equal(z.links.length,0);assert.equal(z.value,0);
- const known=A.relationScore(s,id('钟馗'),[D.heroes.find(h=>h.name==='小乔')],[],D);assert.ok(known.value>0);assert.equal(known.links[0].evidence.n,27);
+ const known=A.relationScore(s,id('钟馗'),[D.heroes.find(h=>h.name==='小乔')],[],D);assert.ok(known.value>0);assert.equal(known.links[0].evidence.n,44);
 });
 test('counter response opportunity uses known availability and correct conditional denominators',()=>{
  const s=E.initial(D),a=A.responseEvidence(id('钟无艳'),id('镜'),s,D),b=A.responseEvidence(id('项羽'),id('关羽'),s,D);
- assert.deepEqual([a.target.picks,a.target.n,a.other.picks,a.other.n],[3,15,0,111]);
- assert.deepEqual([b.target.picks,b.target.n,b.other.picks,b.other.n],[12,33,3,93]);
- const linked=A.relationScore(s,id('项羽'),[],[D.heroes.find(h=>h.name==='关羽')],D);assert.equal(linked.links[0].response.target.n,33);
+ assert.deepEqual([a.target.picks,a.target.n,a.other.picks,a.other.n],[3,18,1,170]);
+ assert.deepEqual([b.target.picks,b.target.n,b.other.picks,b.other.n],[20,48,10,135]);
+ const linked=A.relationScore(s,id('项羽'),[],[D.heroes.find(h=>h.name==='关羽')],D);assert.equal(linked.links[0].response.target.n,48);
  const pairs=A.topPairs(s,D);assert.ok(pairs.length>5);assert.ok(pairs.every((e,i)=>!i||pairs[i-1].n>=e.n));
 });
 test('probability suppresses double-ADC lineup and incomplete blind draft',()=>{

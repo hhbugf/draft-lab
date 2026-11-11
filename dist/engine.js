@@ -27,7 +27,7 @@ function roleEvidence(s,h,data){
  let cache=roleCache.get(data);
  if(!cache){
   cache={all:{},recent:{},profiles:{}};
-  for(const g of data.games)for(const p of g.players){if(!ROLES.includes(p.role))continue;cache.all[p.hero]??={};cache.all[p.hero][p.role]=(cache.all[p.hero][p.role]||0)+1;if(g.date>=ROLE_POLICY.recentStart){cache.recent[p.hero]??={};cache.recent[p.hero][p.role]=(cache.recent[p.hero][p.role]||0)+1;}}
+  for(const g of data.games)for(const p of g.players){if(!ROLES.includes(p.role)||g.roleIssues?.some(x=>x.camp===p.camp))continue;cache.all[p.hero]??={};cache.all[p.hero][p.role]=(cache.all[p.hero][p.role]||0)+1;if(g.date>=ROLE_POLICY.recentStart){cache.recent[p.hero]??={};cache.recent[p.hero][p.role]=(cache.recent[p.hero][p.role]||0)+1;}}
   roleCache.set(data,cache);
  }
  const cacheKey=s.window+':'+h.id;if(cache.profiles[cacheKey])return cache.profiles[cacheKey];
@@ -108,9 +108,9 @@ function apply(s,id,data,options={}){const err=legal(s,id,data,options);if(err)t
 function totals(list){const sum=Object.fromEntries(Object.keys(METRICS).map(k=>[k,0]));for(const h of list)for(const k of Object.keys(sum))sum[k]+=num(h.abilities[k]);return sum;}
 function assess(list){const t=totals(list),warnings=[];if(list.length>=3){if(t.engage<6)warnings.push('可靠先手偏少，后续优先补开团');if(t.peel<7)warnings.push('保护反手不足，核心易被切入');if(t.tank<8)warnings.push('前排承伤偏薄，避免正面硬接');if(t.wave<9)warnings.push('兵线处理偏弱，注意转线成本');if(t.dps<9)warnings.push('持续输出不足，需检查打前排能力');}if(list.length===5&&!list.some(h=>h.damage==='法术'))warnings.push('缺少明确法术输出，注意伤害结构');return {totals:t,warnings,assignment:assign(list)};}
 function sampleGames(s,data){return data.games.filter(g=>s.window!=='recent'||g.date>='2026-10-15');}
-function sampleStats(s,h,data){if(s.window==='all')return h.stats;const gs=sampleGames(s,data);let n=0,w=0,bans=0;for(const g of gs){const p=g.players.find(p=>p.hero===h.id);if(p){n++;if(g.winCamp===p.camp)w++;}if(g.actions.some(a=>a.hero===h.id&&a.type==='ban'))bans++;}return n||bans?{battle_count:n,victory_battle_count:w,win_rate:n?w/n:0,pick_num:n,ban_num:bans,pick_rate:n/gs.length,ban_rate:bans/gs.length}:null;}
+function sampleStats(s,h,data){if(s.window==='all')return h.stats;const gs=sampleGames(s,data);let n=0,w=0,bans=0,pickGames=0;for(const g of gs){const ps=g.players.filter(p=>p.hero===h.id);n+=ps.length;w+=ps.filter(p=>g.winCamp===p.camp).length;if(ps.length)pickGames++;bans+=g.actions.filter(a=>a.hero===h.id&&a.type==='ban').length;}return n||bans?{battle_count:n,victory_battle_count:w,defeated_battle_count:n-w,win_rate:n?w/n:0,pick_num:n,ban_num:bans,pick_game_count:pickGames,pick_rate:gs.length?pickGames/gs.length:0,ban_rate:gs.length?bans/gs.length:0}:null;}
 function pairEvidence(a,b,s,data,type='ally'){
- const gs=sampleGames(s,data);let n=0,w=0;for(const g of gs){const pa=g.players.find(p=>p.hero===a),pb=g.players.find(p=>p.hero===b);if(!pa||!pb||(type==='ally'?pa.camp!==pb.camp:pa.camp===pb.camp))continue;n++;if(g.winCamp===pa.camp)w++;}return {n,w,rate:n?w/n:null};
+ const gs=sampleGames(s,data);let n=0,w=0;for(const g of gs)for(const camp of [1,2]){if(!g.players.some(p=>p.camp===camp&&p.hero===a)||!g.players.some(p=>p.camp===(type==='ally'?camp:3-camp)&&p.hero===b))continue;n++;if(g.winCamp===camp)w++;}return {n,w,rate:n?w/n:null};
 }
 function score(s,h,data,idx,t,context){
  const isBan=t.type==='ban',camp=isBan?3-t.camp:t.camp,key=keyOf(s,camp),team=key==='A'?s.teamA:s.teamB;
